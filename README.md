@@ -172,3 +172,129 @@ class Serie extends Model
 - O Laravel protege a aplicação em forms que utilizam o post para evitar ataques de request, para resolvermos isso adicionamos ```@csrf ``` dentro do form.
 
 - No método que exibe os dados utilizamos ```Classe::all()``` para pegar todos os dados do banco de dados.
+
+
+## Sessão
+
+- Nós conseguimos manipular a sessão no Laravel através do método session do request.
+
+- Podemos adicionar dados na sessão através do ```put()``` informando a chave do valor e o valor.
+
+- Pegamos este dado através do método get e podemos enviar ele no redirecionamento da view por exemplo.
+
+```
+$request->session()->put('mensagem', "Série criada com sucesso!");
+
+$request->session()->get('mensagem');
+```
+
+- Com o ```put()``` o dado fica na sessão permanentemente o que pode não ser uma solução viável para mensagens, o Laravel nos fornece o método ```flash()``` que deixa o dado da sessão por apenas uma requisição, quando a página é atualizada o dado some da sessão.
+
+
+## Exclusão de dados
+
+- Dentro da nossa lista de séries iremos adicionar um form com method post e action /series/remover. Poderiamos adicionar um link mas isso faria com que um possível crawler deletasse todos os dados da lista, o form com method post evita isto.
+
+- Adicionamos a rota para exclusão informando que na url iremos receber o id da série em questão como parâmetro.
+
+```
+Route::post('/series/remover/{id}', 'SeriesController@destroy');
+```
+
+- Podemos adicionar o método delete na rota e adicionar a anotação @method('DELETE') no nosso HTML pois o HTML só suporta os verbos GET e POST, adicionando esta anotação o Laravel envia uma informação a mais na requisição dizendo que este post mapeia para a rota que está com delete.
+
+- Para excluir de fato usaremos no método ```destroy()``` a seguinte sintaxe:
+
+```
+Serie::destroy($request->id);
+```
+
+## Nomeando Rotas
+
+- Podemos nomear um rota no nosso arquivos de rotas para evitar que sempre precisemos lembrar a rota, basta termos o nome dela.
+
+```
+Route::get('/criar/serie', 'SeriesController@create')->name('criar-serie');
+```
+
+- Com isso sempre que tivermos que usar a url /criar/serie iremos utilizar criar-serie, isto ajuda quando temos urls muito grandes, nomeando elas de forma simples e curta é mais fácil de lembrar.
+
+- Quando for utilizar o link para esta rota basta adicionar ```{{route('nome-rota')}}```
+
+- Se a url na rota for mudada isto não impacta a aplicação desde que estejamos utilizando o nome da rota.
+
+
+## Validação de Dados
+
+- O Laravel fornece um método para validação chamado ```validate()``` e nele passamos um array associativo onde a chave é o campo a ser validado e o valor são as regras de validação separadas por um ```|``` (pipe). Para saber os tipos de regras de validação basta checar a documentação do Laravel (<a>https://laravel.com/docs/7.x/validation</a>).
+
+```
+$request->validate([
+    'nome' => 'required',
+]);
+```
+
+- Na documentação podemos encontrar um código pronto para exibir essas mensagens de validação para o usuário.
+
+```
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li> {{$error}} </li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+```
+
+- É interessante extrairmos está validação para um FormRequest. Para criar usaremos o comando:
+
+```
+php artisan make:request NomeRequest
+```
+
+- O arquivo será criado em http/requests e lá podemos colocar nossa validação no método já criado por ele e definir se qualquer usuário pode utilizar esta validação ou não.
+
+```
+class SeriesFormRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     *
+     * @return bool
+     */
+    public function authorize()
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'nome' => 'required|min:2'
+        ];
+    }
+}
+```
+
+- Com isso, ao invés de recebermos um request no método de inserção receberemos a request que nós mesmos criamos e colocamos as regras de validação.
+
+- Podemos também adicionar o método message retornando um array associativo onde a chave é a regra de validação e o valor a mensagem que será exibida.
+
+```
+public function messages()
+{
+    return [
+        'nome.required' => 'O campo nome é obrigatório',
+        'nome.min' => 'O campo nome deve conter no mínimo 2 caracteres'
+    ];
+}
+```
+
+- Com isso podemos personalizar as mensagens como quisermos.

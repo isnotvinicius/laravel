@@ -1,5 +1,6 @@
 <?php
 
-Route::get('/series', 'SeriesController@index');
-Route::get('/series/criar', 'SeriesController@create');
+Route::get('/series', 'SeriesController@index')->name('listar-series');
+Route::get('/series/criar', 'SeriesController@create')->name('criar-serie');
 Route::post('/series/criar', 'SeriesController@store');
+Route::delete('/series/{id}', 'SeriesController@destroy');
