@@ -298,3 +298,54 @@ public function messages()
 ```
 
 - Com isso podemos personalizar as mensagens como quisermos.
+
+
+## Relacionamentos
+
+- Ao adicionarmos mais modelos e tabelas na nossa aplicação precisamos pensar no relacionamento dos mesmos, neste exemplo de séries estaremos adicionando as classes e tabelas de Temporada e Episodios.
+
+- Poderíamos criar o arquivo de modelo e a migration na mão mas também é possível criar isto pelo terminal de forma mais otimizada, basta darmos o comando ```php artisan make:model NomeModel -m```. O parâmetro -m serve para informarmos que desejamos criar o arquivo de migration junto da nossa modelo.
+
+- Os relacionamentos no Laravel são feitos através de métodos, onde o nome do método será utilizado para obtermos os valores.
+
+
+- Dentro do método informamos o relacionamento.
+
+```
+class Serie extends Model
+{
+    public function temporadas
+    {
+        return $this->hasMany(Temporada::class);
+    }
+}
+```
+
+- Com isso informamos que uma série possuí muitas temporadas.
+
+- Informamos também que aquela classe pertence a outra.
+
+```
+class Temporada extends Model
+{
+    public function serie()
+    {
+        return $this->belongsTo(Serie::class);
+    }
+}
+```
+
+- Com isso dizemos que uma temporada pertence a uma série.
+
+- No arquivo de migrations precisamos colocar os relacionamentos também. Primeiro adicionamos um campo inteiro que será o Id de outra tabela, depois informamos que este campo é uma chave estrangeira.
+
+```
+public function up()
+{
+    Schema::create('temporadas', function (Blueprint $table) {
+        $table->bigIncrements('id');
+        $table->integer('serie_id');
+        $table->foreign('serie_id')->references('id')->on('series');
+    });
+}
+```
