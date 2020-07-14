@@ -349,3 +349,126 @@ public function up()
     });
 }
 ```
+
+## Exclusão com relacionamentos
+
+- Na nossa aplicação criamos um relacionamento de temporadas e episódios com as séries e na hora de excluir uma série recebiamos um erro do banco de dados devido as chaves estrangeiras. Para solucionarmos este problema precisamos excluir os episódios da temporada, depois as temporadas da série e por último a série.
+
+- Buscamos a série pelo ID do request e através dela chamamos os método each das temporadas, dentro dele chamamos o each para os episódios e deletamos os episódios. Após deletar os episódios deletamos as temporadas e por fim deletamos a série como visto abaixo:
+
+```
+public function destroy(Request $request)
+{
+    $serie = Serie::find($request->id);
+
+    $serie->temporadas->each(function (Temporada $temporada){
+        $temporada->episodios->each(function (Episodio $episodio){
+            $episodio->delete();
+        });
+        $temporada->delete();
+    });
+
+    $serie->delete();
+}
+```
+
+- No nosso caso é também interessante utilizar transações. Uma transação em banco dados significa que vamos executar uma sequência de querys e se alguma delas falhar nenhuma é executada. Isto garante que se algum erro aconteça durante o processo a execução não seja feita pela metade.
+
+- Para informamos que o código a ser executado é uma transação utilizaremos ```DB::transaction``` passando uma função com os códigos a serem executados como parâmetro.
+
+```
+$nomeSerie = '';
+
+DB::transaction(function () use ($serieId, &$nomeSerie){
+    $serie = Serie::find($serieId);
+    $nomeSerie = $serie->nome;
+
+    $serie->temporadas->each(function (Temporada $temporada){
+        $temporada->episodios->each(function (Episodio $episodio){
+            $episodio->delete();
+        });
+        $temporada->delete();
+    });
+
+    $serie->delete();
+});
+```
+
+- Note que colocamos um use junto da função, isto se deve ao fato de que estamos usando dados que estão fora da função e estamos alterando dados que também estão fora da função, então passamos o ID que recebemos do request e passamos como referência o nome da série.
+
+
+## Alterando Dados
+
+- Primeiro precisamos adicionar o botão de alterar o dado. Este botão chama uma função JavaScript para realizar uam troca de elemento fazendo com que o nome da série seja escondido e apareça uma caixa de texto para que o novo nome seja digitado ou o contrário.
+
+- Ao digitar o nome e clicar no botão para salvar será executada outra função JavaScript, esta função cria um formulário com os dados que temos no input e faz uma requisição com esse form criado por nós para nosso arquivo de rotas. Nosso arquivo de rotas redireciona para a controller e lá fazemos a alteração do dado.
+
+
+- Botões e Inputs:
+```
+<span id="nome-serie-{{ $serie->id }}">{{ $serie->nome }}</span>
+
+<div class="input-group w-50" hidden id="input-nome-serie-{{ $serie->id }}">
+    <input type="text" class="form-control" value="{{ $serie->nome }}">
+    <div class="input-group-append">
+        <button class="btn btn-primary" onclick="editarSerie({{ $serie->id }})">
+            <i class="fas fa-check"></i>
+        </button>
+        @csrf
+    </div>
+</div>
+```
+
+- Funções JavaScript:
+
+```
+<script>
+function toggleInput(serieId) {
+    const nomeSerieEl = document.getElementById(`nome-serie-${serieId}`);
+    const inputSerieEl = document.getElementById(`input-nome-serie-${serieId}`);
+    if (nomeSerieEl.hasAttribute('hidden')) {
+        nomeSerieEl.removeAttribute('hidden');
+        inputSerieEl.hidden = true;
+    } else {
+        inputSerieEl.removeAttribute('hidden');
+        nomeSerieEl.hidden = true;
+    }
+}
+
+function editarSerie(serieId) {
+    
+    let formData = new FormData();
+    const nome = document
+        .querySelector(`#input-nome-serie-${serieId} > input`)
+        .value;
+    const token = document
+        .querySelector(`input[name="_token"]`)
+        .value;
+
+    formData.append('nome', nome);
+    formData.append('_token', token);
+
+    const url = `/series/${serieId}/editaNome`;
+
+    fetch(url, {
+        method: 'POST',
+        body: formData
+    }).then(() => {
+        toggleInput(serieId);
+        document.getElementById(`nome-serie-${serieId}`).textContent = nome;
+    });
+}
+</script> 
+```
+
+- Contoller:
+
+```
+public function editaNome(int $id, Request $request)
+{
+    $novoNome = $request->nome;
+    $serie = Serie::find($id);
+    $serie->nome = $novoNome;
+    $serie->save();
+}
+```

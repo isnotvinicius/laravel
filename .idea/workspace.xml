@@ -21,12 +21,7 @@
   <component name="ChangeListManager">
     <list default="true" id="14427638-e65e-4cb5-a3fc-07a6665c4ab1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/SeriesController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/SeriesController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Serie.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Serie.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/series/create.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/series/create.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/series/index.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/series/index.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -144,6 +139,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunManager">
     <configuration name="phpunit.xml" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
@@ -166,6 +162,8 @@
       <workItem from="1594332192155" duration="1013000" />
       <workItem from="1594403563018" duration="6106000" />
       <workItem from="1594659525113" duration="6741000" />
+      <workItem from="1594745477241" duration="1146000" />
+      <workItem from="1594746648718" duration="60000" />
     </task>
     <servers />
   </component>
@@ -197,17 +195,21 @@
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="743" y="311" width="424" height="484" key="FileChooserDialogImpl/0.27.1920.1053@0.27.1920.1053" timestamp="1594332189198" />
-    <state x="622" y="273" width="665" height="561" key="NewPhpClassDialog" timestamp="1594226786095">
+    <state x="622" y="273" width="665" height="561" key="NewPhpClassDialog" timestamp="1594746050326">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="622" y="273" width="665" height="561" key="NewPhpClassDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1594226786095" />
+    <state x="622" y="273" width="665" height="561" key="NewPhpClassDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1594746050326" />
     <state x="755" y="479" width="399" height="149" key="NewPhpFileDialog" timestamp="1594235906182">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
     <state x="755" y="479" width="399" height="149" key="NewPhpFileDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1594235906182" />
-    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1594404346005">
+    <state x="449" y="188" key="SettingsEditor" timestamp="1594746628543">
       <screen x="0" y="27" width="1920" height="1053" />
     </state>
-    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1594404346005" />
+    <state x="449" y="188" key="SettingsEditor/0.27.1920.1053@0.27.1920.1053" timestamp="1594746628543" />
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup" timestamp="1594746478842">
+      <screen x="0" y="27" width="1920" height="1053" />
+    </state>
+    <state x="623" y="259" width="672" height="678" key="search.everywhere.popup/0.27.1920.1053@0.27.1920.1053" timestamp="1594746478842" />
   </component>
 </project>
