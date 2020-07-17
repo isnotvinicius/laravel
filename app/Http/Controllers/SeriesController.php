@@ -6,6 +6,7 @@ use App\Http\Requests\SeriesFormRequest;
 use App\Serie;
 use App\Services\{RemovedorSeries, CriadorSeries};
 use Illuminate\Http\Request;
+use Illuminate\Routing\Middleware;
 
 
 class SeriesController extends Controller

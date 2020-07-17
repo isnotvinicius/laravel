@@ -472,3 +472,68 @@ public function editaNome(int $id, Request $request)
     $serie->save();
 }
 ```
+
+## Autenticação utilizando Laravel
+
+- Com o comando ```php artisan make:auth``` o Laravel cria toda a estrutura necessária para criarmos uma autenticação no nosso sistema.
+
+- Podemos utilizar o Middleware no construtor para verificar se o usuário está autenticado no sistema. Middleware é um mecânismo para filtrar requisições HTTP que vêm para nossa aplicação. Para verificarmos se um usuário está logado na aplicação basta adicionarmos o middleware com o auth no nosso método construtor.
+
+- Podemos adicionar a autenticação nos métodos da controller com o ```Auth::check()```.
+
+- Podemos adicionar a autenticação diretamente nas rotas com o ```->middleware('auth);```.
+
+- Existem várias formas de se realizar esta verificação e todas são válidas de acordo com a aplicação, é necessário analisar e ver qual melhor se encaixa com sua aplicação.
+
+
+## Autenticação própria
+
+- Primeiro precisamos pegar os dados do nosso request na controller. Usaremos o ```$request->only(['dado1', 'dado2']);```.
+
+- Com o método Auth::attempt nós faremos a verificação do login. Este método pega os dados do request e verifica se estes dados estão no banco, caso estejam o login será realizado e o usuário será salvo na sessão. Caso não esteja logado nós redirecionamos o usuário de volta para o form de login e exibimos um erro. Caso o usuário consiga realizar o login redirecionamos ele para a página inicial da aplicação.
+
+```
+public function entrar(Request $request)
+{
+    if(!Auth::attempt($request->only(['email', 'password']))){
+        return redirect()->back()->withErrors('E-mail e/ou senha inválidos');
+    }
+
+    return redirect()->route('listar-series');
+}
+```
+
+- Criamos a controle responsável por realizar o registro do usuário. Nela temos o método create que exibe a view de registro e o método store que realiza a inserção do usuário no sistema. 
+
+- Pegaremos todos os dados da sessão exceto o token. ```$data = $request->except('_token');```.
+
+- Precisamos criptografar esta senha para que a aplicação seja segura, faremos isso com o método make da classe Hash. Isso faz com que o campo password da nossa view seja transformado em hash e na hora de comparar a senha digitada no login com a senha cadastrada o Laravel faz de forma automática por termos usado o método make.
+
+- Depois de criptografar a senha criamos o usuário.
+
+- Podemos depois redirecionar ele para a view de login ou então realizar o login automáticamente.
+
+```
+public function store(Request $request)
+{
+    $data = $request->except('_token');
+
+    $data['password'] = Hash::make($data['password']);
+
+    $user = User::create($data);
+    Auth::login($user);
+}
+```
+
+- Para realizar o logout faremos na própria rota com o método logout do Auth.
+
+```
+Route::get('/sair', function(){
+    Auth::logout();
+    return redirect('/entrar');
+});
+```
+
+- Note que ao tentar acessar uma página que não temos acesso somos redirecionados para a página de login do Laravel. Para mudarmos isso iremos em ```app/middleware/Authenticate.php``` e trocaremos a linha ```return route('login');``` para ```return '/entrar';``` que é a rota do nosso formulário de login.
+
+- Podemos também criar o nosso próprio middleware. No terminal usaremos o comando ```php artisan make:middleware Nome```. No método handle deste arquivo criado adicionamos a verificação de autenticação com o ```!Auth::check()``` e retornamos o redirecionamento para a página de login caso a condição seja verdadeira. Onde usamos ```->middleware('auth');``` no nosso código podemos substituir por ```NomeCompletoClasse::class``` ou então no arquivo kernel podemos dar um nome a esta classe e utilizar este nome na chamada do middleware.

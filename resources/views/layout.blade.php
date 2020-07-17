@@ -8,14 +8,25 @@
     <title>Controle de Séries</title>
 </head>
 <body>
-    <div class="container">
 
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2 d-flex justify-content-between">
+        <a class="navbar navbar-brand" href="{{ route('listar-series') }}">Home</a>
+
+        @auth
+        <a href="/sair" class="text-danger">Sair</a>
+        @endauth
+
+        @guest
+        <a href="{{route('listar-series')}}">Entrar como convidado</a>
+        @endguest
+    </nav>
+
+    <div class="container">
         <div class="jumbotron">
             <h1>@yield('cabecalho')</h1>
         </div>        
-
         @yield('conteudo')
-        
     </div>
+
 </body>
 </html>
