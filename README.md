@@ -5,7 +5,7 @@
 - Há duas formas de instalar o Laravel: a primeira é utilizando o composer require e a segunda é criando um projeto Laravel diretamente, que é a forma utilizada aqui.
 
 ```
-composer create-project prefer-dist laravel/laravel nome-projeto 5.8.*
+composer create-project --prefer-dist laravel/laravel nome-projeto 5.8.*
 ```
 
 ## Artisan
